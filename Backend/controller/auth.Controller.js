@@ -47,10 +47,57 @@ const signUp = async (req, res) => {
     }
 }
 
+//login controller
+const login = async (req, res) => {
+    const { email, userName, password } = req.body;
+
+    try {
+        if ((!email || !userName) && !password) {
+            return res.status(400).json({
+                success: false,
+                message: "please fill Both fields"
+            });
+        }
+        //check Existing user
+        const user = await User.find({ $or: [email, userName] });
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "User Not found"
+            })
+        };
+
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        
+        if (!isPasswordMatch) {
+            return res.status(200).json({
+                success: false,
+                message: "Invalid Password"
+            })
+        };
+
+        res.status(200).json({
+            success: true,
+            message: "Login successful",
+            data: { user }
+        });
+
+
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server Error",
+            error: error
+        })
+    }
+}
 
 
 
 
-module.exports={
-    signUp
+
+module.exports = {
+    signUp,
+    login
 }
