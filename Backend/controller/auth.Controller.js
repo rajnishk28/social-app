@@ -37,13 +37,13 @@ const signUp = async (req, res) => {
         await newUser.save();
 
         // Respond without password
-        const userResponse = { ...newUser._doc };
-        delete userResponse.password;
+        const {password:_,...user} = newUser._doc ;
+       
 
         res.status(201).json({
             success: true,
             message: "User registered successfully",
-            user: userResponse,
+            user: user,
         });
     } catch (error) {
         return res.status(500).json({
@@ -98,13 +98,11 @@ const login = async (req, res) => {
             }
         );
         // Respond with user details, excluding password
-        const userResponse = { ...user._doc };
-        delete userResponse.password;
-
+        const { password: _, ...userData } = user._doc;
         res.status(200).json({
             success: true,
             message: "Login successful",
-            data: { userResponse, token },
+            data: { user:userData, token }
         });
     } catch (error) {
         return res.status(500).json({
