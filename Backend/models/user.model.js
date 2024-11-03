@@ -17,11 +17,14 @@ const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         trim: true,
+        unique: true,
         lowercase: true,
         required: true
     },
     password: {
-        type: String
+        type: String,
+        trim: true,
+        required: true
     }
 }, { timestamps: true })
 
