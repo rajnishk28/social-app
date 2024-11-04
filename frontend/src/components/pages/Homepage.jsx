@@ -1,12 +1,12 @@
 import React from "react";
-import Navbar from "../Navbar";
+import Navbar from "../Sidebar";
 import Cards from "../home/Cards";
 
 const Homepage = () => {
   return (
     <>
       <Navbar />
-      <Cards />
+      {/* <Cards /> */}
     </>
   );
 };
