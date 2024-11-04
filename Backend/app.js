@@ -7,6 +7,10 @@ const cors = require("cors");
 app.use(express.json());
 app.use(cors());
 
+app.get("/", (req, res) => {
+    res.send("server is up and running")
+})
+
 app.use("/auth", AuthRoutes);
 app.use("/file", fileUploadRoutes);
 app.use("/user", profileRoutes);
