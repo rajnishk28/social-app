@@ -17,11 +17,18 @@ const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         trim: true,
+        unique: true,
         lowercase: true,
         required: true
     },
     password: {
-        type: String
+        type: String,
+        trim: true,
+        required: true
+    },
+    profileImage: { 
+        type: String, 
+        default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQU1b6NumgqTPC22Q_x8Dcb7XSYm0X9q-tgSA&s" 
     }
 }, { timestamps: true })
 
