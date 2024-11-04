@@ -1,6 +1,7 @@
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { uploadToCloudinary } = require("../utils/fileUploadUtil")
 
 //signUp user Controller
 const signUp = async (req, res) => {
@@ -166,32 +167,41 @@ const getUserPublicProfile = async (req, res) => {
 
 //update userProfile
 const updateUserDetails = async (req, res) => {
-    const { name, email, userName, profileImage } = req.body;
+    const { name, email, userName } = req.body;
+    const file = req.file;
     const userId = req.user.userId;
+
+    // Initialize updateData with provided fields
     const updateData = {};
     if (name) updateData.name = name;
     if (email) updateData.email = email;
     if (userName) updateData.userName = userName;
-    if (profileImage) updateData.profileImage = profileImage;
+
     try {
+        // Handle file upload if file exists
+        if (file) {
+            const uploadResult = await uploadToCloudinary(file.path);
+            updateData.profileImage = uploadResult.url;
+        }
+
         const updatedDetails = await User.findByIdAndUpdate(
-            { _id: userId },
+            userId,
             updateData,
             { new: true }
-        )
+        );
 
         return res.status(200).json({
             success: true,
             data: updatedDetails
         });
-
     } catch (error) {
         return res.status(500).json({
             success: false,
             error: error.message
         });
     }
-}
+};
+
 
 module.exports = {
     signUp,
