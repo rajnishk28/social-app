@@ -1,6 +1,6 @@
 const File = require("../models/file.model");
 
-const getProfile = async (req, res) => {
+const getAllProfileImage = async (req, res) => {
     try {
         const userId = req.user.userId;
         const profile = await File.find({ user:userId });
@@ -28,5 +28,5 @@ const getProfile = async (req, res) => {
 }
 
 module.exports = {
-    getProfile
+    getAllProfileImage
 }

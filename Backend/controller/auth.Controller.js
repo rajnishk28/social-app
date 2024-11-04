@@ -37,8 +37,8 @@ const signUp = async (req, res) => {
         await newUser.save();
 
         // Respond without password
-        const {password:_,...user} = newUser._doc ;
-       
+        const { password: _, ...user } = newUser._doc;
+
 
         res.status(201).json({
             success: true,
@@ -102,7 +102,7 @@ const login = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Login successful",
-            data: { user:userData, token }
+            data: { user: userData, token }
         });
     } catch (error) {
         return res.status(500).json({
@@ -113,7 +113,90 @@ const login = async (req, res) => {
     }
 };
 
+//User Profile
+const getUserProfile = async (req, res) => {
+    const email = req.user.email;
+    try {
+        const userProfile = await User.findOne({ email }).select('-password');
+
+        if (!userProfile) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "User details",
+            data: userProfile
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+//user Profile Public by userName
+const getUserPublicProfile = async (req, res) => {
+    const userName = req.params.userName;
+    try {
+        const userProfile = await User.findOne({ userName }).select('-password');
+
+        if (!userProfile) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "User details Found",
+            data: userProfile
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+//update userProfile
+const updateUserDetails = async (req, res) => {
+    const { name, email, userName, profileImage } = req.body;
+    const userId = req.user.userId;
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (userName) updateData.userName = userName;
+    if (profileImage) updateData.profileImage = profileImage;
+    try {
+        const updatedDetails = await User.findByIdAndUpdate(
+            { _id: userId },
+            updateData,
+            { new: true }
+        )
+
+        return res.status(200).json({
+            success: true,
+            data: updatedDetails
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+}
+
 module.exports = {
     signUp,
     login,
+    getUserProfile,
+    getUserPublicProfile,
+    updateUserDetails
 };

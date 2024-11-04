@@ -22,7 +22,16 @@ const uploadToCloudinary = async (filePath) => {
         throw new Error(`Failed to upload to Cloudinary: ${error.message}`);
     }
 };
+const deleteFromCloudinary = async (publicId) => {
+    try {
+        const result = await cloudinary.uploader.destroy(publicId);
+        return result;
+    } catch (error) {
+        throw new Error(`Failed to delete from Cloudinary: ${error.message}`);
+    }
+};
 
 module.exports = {
-    uploadToCloudinary
+    uploadToCloudinary,
+    deleteFromCloudinary
 };
